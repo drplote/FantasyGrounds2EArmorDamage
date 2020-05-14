@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<root version="3.0" release="1.0" >
+
+  <properties>
+    <name>2E Armor Damage</name>
+    <version>1.0</version>
+    <loadorder>99</loadorder>
+    <description>
+      <text>Support for 2E armor damage rules from The Complete Fighter's Handbook</text>
+      <website></website>
+      <author>Sterno</author>
+    </description>
+    <ruleset>
+      <name>2E</name>
+    </ruleset>
+  </properties>
+
+  <announcement text="AD&amp;D 2E Armor Damage rules from The Complete Fighter's Handbook" font="emotefont" icon="rulesetlogo_DungeonClassic" />
+  <base>    
+    <!-- High-level scripts -->
+	<script file="campaign/scripts/item_main_armor_damage.lua" />
+	<includefile source="campaign/record_item.xml" />
+	<includefile source="strings/strings_armor_damage.xml" />
+    <!--<script name="DataCommonADND1e" file="scripts/data_common_adnd1e.lua" />-->
+  </base>
+    
+</root>
