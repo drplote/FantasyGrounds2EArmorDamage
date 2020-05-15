@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- 
+  Please see the license.html file included with this distribution for 
+  attribution and copyright information.
+-->
+
+<root merge="join">
+
+  <template name="list_charinv" merge="join">
+    <windowlist>
+      <script file="campaign/scripts/char_invlist_armor_damage.lua" />
+    </windowlist>
+  </template>
+
+</root>

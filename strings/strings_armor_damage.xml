@@ -2,7 +2,7 @@
 
 <root>
   <string name="item_label_hp_lost">HP Lost</string>
-  <string name="item_label_hp_max">Max HP</string>
+  <string name="item_label_max_hp">Max HP</string>
   <string name="item_label_hp_lost_tooltip">The amount of damage this armor has taken</string>
-  <string name="item_label_hp_max_tooltip">The amount of damage this armor can take before breaking</string>
+  <string name="item_label_max_hp_tooltip">The amount of damage this armor can take before breaking</string>
 </root>
