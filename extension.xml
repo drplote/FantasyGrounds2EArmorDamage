@@ -20,6 +20,7 @@
   <base>    
     <!-- High-level scripts -->
 	<includefile source="campaign/record_item.xml" />
+	<includefile source="campaign/record_char_main.xml" />
 	<includefile source="strings/strings_armor_damage.xml" />
     <script name="ArmorDamageManager" file="scripts/manager_armor_damage.lua" />
   </base>

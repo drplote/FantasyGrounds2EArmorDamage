@@ -5,11 +5,17 @@
   attribution and copyright information.
 -->
 
-<root merge="join">
+<root>
 
-  <template name="list_charinv" merge="join">
+  <template name="list_charinv" merge="replace">
     <windowlist>
-      <script file="campaign/scripts/char_invlist_armor_damage.lua" />
+      <child></child>
+      <child><backcolor>4040301E</backcolor></child>
+      <datasource>.inventorylist</datasource>
+      <class>char_invitem</class>
+      <allowdelete />
+      <empty font="list-empty" textres="empty_inventory_label" />
+      <script file="campaign/scripts/char_invlist.lua" />
     </windowlist>
   </template>
 
