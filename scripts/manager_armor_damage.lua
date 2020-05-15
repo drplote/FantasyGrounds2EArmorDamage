@@ -7,6 +7,7 @@ function onInit()
 	ActionDamage.getAbsorbedByType = getAbsorbedByType;
 end
 
+-- I think this -should- only apply armor soak after other forms of absorbtion have triggered, so it doesn't happen if there's no damage left, but ¯\_(ツ)_/¯
 function getAbsorbedByType(rTarget, aSrcDmgClauseTypes, sRangeType, nDamageToAbsorb)
 	local nAbsorbed = lOldGetAbsorbedByType(rTarget, aSrcDmgClauseTypes, sRangeType, nDamageToAbsorb);
 	if nAbsorbed < nDamageToAbsorb then
@@ -27,6 +28,7 @@ function getAbsorbedByType(rTarget, aSrcDmgClauseTypes, sRangeType, nDamageToAbs
 	return nAbsorbed;
 end
 
+-- This entire method is 99% a copy and paste of CharManager.calcItemArmorClass because there was no way to insert the one line I needed, the check for isArmorBroken()
 function calcItemArmorClass(nodeChar)
   local nMainArmorBase = 10;
   local nMainArmorTotal = 0;
@@ -157,6 +159,7 @@ function removeDamageFromArmor(nodeChar, nodeItem)
 	end
 end
 
+-- Technically not needed since I don't think 2E has shield damage, but Hackmaster does and I'm too lazy to remove this code since it doens't hurt anything
 function getDamageableShieldWorn(nodeChar)
 	-- Possible problem: If the character has more than one shield worn, this is only going to return the first it finds
 	for _,vNode in pairs(DB.getChildren(nodeChar, "inventorylist")) do
