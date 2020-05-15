@@ -1,5 +1,4 @@
 function onInit()
-	Debug.console("char_main_armor_damage.lua", "onInit");
 	super.onInit();
 	
 	local node = getDatabaseNode();
@@ -18,6 +17,5 @@ function update()
 end
 
 function updateArmor()
-	Debug.console("char_main_armor_damage.lua", "updateArmor");
 	CharManager.calcItemArmorClass(getDatabaseNode());
 end

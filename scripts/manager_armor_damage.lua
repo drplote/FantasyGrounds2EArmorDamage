@@ -1,6 +1,30 @@
+local lOldGetAbsorbedByType = nil;
+
 function onInit()
-	Debug.console("manager_armor_damage.lua", "onInit");
 	CharManager.calcItemArmorClass = calcItemArmorClass;
+	
+	lOldGetAbsorbedByType = ActionDamage.getAbsorbedByType;
+	ActionDamage.getAbsorbedByType = getAbsorbedByType;
+end
+
+function getAbsorbedByType(rTarget, aSrcDmgClauseTypes, sRangeType, nDamageToAbsorb)
+	local nAbsorbed = lOldGetAbsorbedByType(rTarget, aSrcDmgClauseTypes, sRangeType, nDamageToAbsorb);
+	if nAbsorbed < nDamageToAbsorb then
+		if ActorManager.isPC(rTarget) then
+			local sTargetType, nodeTarget = ActorManager.getTypeAndNode(rTarget);
+			local nodePcArmor = getDamageableArmorWorn(nodeTarget);
+			local nArmorHpRemaining = math.max(DB.getValue(nodePcArmor, "maxhp", 0) - DB.getValue(nodePcArmor, "hplost", 0), 0);
+			local nDamageSoaked = math.min(1, nArmorHpRemaining);
+			nAbsorbed = nAbsorbed + nDamageSoaked;
+			if nDamageSoaked > 0 then
+				local sCharName = DB.getValue(nodeTarget, "name");
+				local sItemName = getItemNameForPlayer(nodePcArmor);
+				ChatManager.SystemMessage(sCharName .. "'s " .. sItemName .. " soaks " .. nDamageSoaked .. " damage.");
+				addDamageToArmor(nodeTarget, nodePcArmor, nDamageSoaked);
+			end
+		end
+	end
+	return nAbsorbed;
 end
 
 function calcItemArmorClass(nodeChar)
@@ -10,11 +34,6 @@ function calcItemArmorClass(nodeChar)
   local bNonCloakArmorWorn  = ItemManager2.isWearingArmorNamed(nodeChar, DataCommonADND.itemArmorNonCloak);
   local bMagicArmorWorn     = ItemManager2.isWearingMagicArmor(nodeChar);
   local bUsingShield        = ItemManager2.isWearingShield(nodeChar);
-  
-  Debug.console("manager_armor_damage.lua", "calcItemArmorClass");
--- Debug.console("manager_char.lua","calcItemArmorClass","bNonCloakArmorWorn",bNonCloakArmorWorn);      
--- Debug.console("manager_char.lua","calcItemArmorClass","bMagicArmorWorn",bMagicArmorWorn);      
--- Debug.console("manager_char.lua","calcItemArmorClass","bUsingShield",bUsingShield);      
   
   for _,vNode in pairs(DB.getChildren(nodeChar, "inventorylist")) do
     if DB.getValue(vNode, "carried", 0) == 2 then
@@ -47,12 +66,7 @@ function calcItemArmorClass(nodeChar)
         bIsArmor = false;
         bIsShield = false;
       end      
-      --
--- Debug.console("manager_char.lua","calcItemArmorClass","sTypeLower",sTypeLower);      
--- Debug.console("manager_char.lua","calcItemArmorClass","sSubtypeLower",sSubtypeLower);      
--- Debug.console("manager_char.lua","calcItemArmorClass","nMainArmorBase",nMainArmorBase);      
--- Debug.console("manager_char.lua","calcItemArmorClass","nMainArmorTotal",nMainArmorTotal);      
--- Debug.console("manager_char.lua","calcItemArmorClass","nMainShieldTotal",nMainShieldTotal);   
+
       if (bIsArmor or bIsShield or bIsRingOrCloak) and not isArmorBroken(vNode) then
         local bID = LibraryData.getIDState("item", vNode, true);
         -- we could use bID to make the AC not apply until the item is ID'd? --celestian
@@ -87,31 +101,12 @@ function calcItemArmorClass(nodeChar)
     end
   end
   
-  -- if (nMainArmorTotal == 0) and (nMainShieldTotal == 0) and hasTrait(nodeChar, TRAIT_NATURAL_ARMOR) then
-    -- nMainArmorTotal = 3;
-  -- end
-  
-  -- flip value for decending ac in nMainShieldTotal -celestian
   nMainShieldTotal = -(nMainShieldTotal);
     
   DB.setValue(nodeChar, "defenses.ac.base", "number", nMainArmorBase);
   DB.setValue(nodeChar, "defenses.ac.armor", "number", nMainArmorTotal);
   DB.setValue(nodeChar, "defenses.ac.shield", "number", nMainShieldTotal);
-  
-  --steal/dex not used here
-  -- DB.setValue(nodeChar, "defenses.ac.dexbonus", "string", sMainDexBonus);
-  -- DB.setValue(nodeChar, "defenses.ac.disstealth", "number", nMainStealthDis);
-  
-  -- add speed penalty for armor type around here? --celestian
-    
-  -- local bArmorSpeedPenalty = false;
-  -- local nArmorSpeed = 0;
-  -- if bArmorSpeedPenalty then
-    -- nArmorSpeed = -10;
-  -- end
-  -- DB.setValue(nodeChar, "speed.armor", "number", nArmorSpeed);
-  -- local nSpeedTotal = DB.getValue(nodeChar, "speed.base", 12) + nArmorSpeed + DB.getValue(nodeChar, "speed.misc", 0) + DB.getValue(nodeChar, "speed.temporary", 0);
-  -- DB.setValue(nodeChar, "speed.total", "number", nSpeedTotal);
+
 end
 
 function isArmorBroken(nodeItem)

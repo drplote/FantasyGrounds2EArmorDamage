@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-
-<root>
-    
-  <windowclass name="charsheet_inventory_contents" merge="join">
-	<script file="campaign/scripts/inv_contents_armor_damage.lua"/>
-  </windowclass> 
-  
-</root>
